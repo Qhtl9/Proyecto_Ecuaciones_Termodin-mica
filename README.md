@@ -1,1 +1,1 @@
-# Proyecto_Ecuaciones_Termodin-mica
+# Proyecto_Ecuaciones_Termodinámica
