@@ -120,26 +120,30 @@ def calcular():
 
 # Crear la interfaz gráfica
 window = tk.Tk()
-window.title("Cálculo de Masa y Temperatura")
+window.title("Proyecto de termodinámica")
+window.iconbitmap("heat_flask_lab_icon_125456.ico")
+
+# Restringir el tamaño de la ventana
+window.resizable(width=False, height=False)
 
 # Etiquetas y campos de entrada
-Label(window, text="Temperatura Inicial (°C):").grid(row=0, column=0, padx=10, pady=5, sticky="w")
+Label(window, text="Temperatura Inicial [°C]:").grid(row=0, column=0, padx=10, pady=5, sticky="w")
 entry_temp_inicial = Entry(window)
 entry_temp_inicial.grid(row=0, column=1, padx=10, pady=5)
 
-Label(window, text="Masa Inicial (kg):").grid(row=1, column=0, padx=10, pady=5, sticky="w")
+Label(window, text="Masa Inicial [kg]:").grid(row=1, column=0, padx=10, pady=5, sticky="w")
 entry_masa_inicial = Entry(window)
 entry_masa_inicial.grid(row=1, column=1, padx=10, pady=5)
 
-Label(window, text="Intervalo de Tiempo (s):").grid(row=2, column=0, padx=10, pady=5, sticky="w")
+Label(window, text="Intervalo de Tiempo [s]:").grid(row=2, column=0, padx=10, pady=5, sticky="w")
 entry_intervalo_tiempo = Entry(window)
 entry_intervalo_tiempo.grid(row=2, column=1, padx=10, pady=5)
 
-Label(window, text="Potencia de la Parrilla (W):").grid(row=3, column=0, padx=10, pady=5, sticky="w")
+Label(window, text="Potencia de la Parrilla [W]:").grid(row=3, column=0, padx=10, pady=5, sticky="w")
 entry_potencia_parrilla = Entry(window)
 entry_potencia_parrilla.grid(row=3, column=1, padx=10, pady=5)
 
-Label(window, text="Presión Atmosférica (MPa):").grid(row=4, column=0, padx=10, pady=5, sticky="w")
+Label(window, text="Presión Atmosférica [MPa]:").grid(row=4, column=0, padx=10, pady=5, sticky="w")
 entry_presion_atmosferica = Entry(window)
 entry_presion_atmosferica.grid(row=4, column=1, padx=10, pady=5)
 
@@ -149,7 +153,7 @@ btn_calcular.grid(row=5, column=0, columnspan=2, pady=10)
 
 # Resultado
 Label(window, text="Resultado:").grid(row=6, column=0, padx=10, pady=5, sticky="w")
-text_resultado = scrolledtext.ScrolledText(window, width=40, height=10, wrap=tk.WORD)
+text_resultado = scrolledtext.ScrolledText(window, width=40, height=7, wrap=tk.WORD)
 text_resultado.grid(row=7, column=0, columnspan=2, padx=10, pady=5)
 
 window.mainloop()
