@@ -38,13 +38,6 @@ t = float(input("Introduzca el intervalo de tiempo para obtener la temperatura y
 P = float(input("Introduzca la potencia de la parrilla\n\t[W]> "))
 P_atm = float(input("Introduzca la presión atmosférica\n\t[MPa]> "))
 
-
-##t = 75.24375524753077
-##T_i = 10
-##P_atm = 0.101325
-##P = 1000 # Potencia
-##M_i = 0.05
-
 # Verificar que la temperatura inicial corresponde a la fase líquida
 T_sat = Cálculo_Tsat(P_atm) # [°C]
 if(T_sat > T_i):
