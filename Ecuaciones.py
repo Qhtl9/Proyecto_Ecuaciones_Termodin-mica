@@ -30,8 +30,26 @@ def Cálculo_EntalpíaVap(T_sat): # Tsat: Temperatura de saturación en [°C]
     
     return h_fg # [kJ/kg]
 
+def Cálculo_Calidad(Valor, Valor_l, Valor_v):
+    return ((Valor - Valor_l)/(Valor_v - Valor_l))
 
+# Calcular la temperatura y la masa líquida en el tiempo dado
+def Cáculo_MasaTemperatura(C_ea, T_i, M_i, P, T_sat, t_sat, t_vap, t):
+    if(t_sat >= t):
+        M_t = M_i
+        Q_t = P*t
+        T_t = (Q_t*1/(M_t*C_ea)) + T_i
+    elif(t_vap >= t):
+        x = Cálculo_Calidad(t, t_vap+t_sat, t_sat)
+        M_t = M_i*x
+        Q_t = P*t
+        T_t = T_sat
+    else:
+        return -1;
+    
+    return [M_t, T_t]
 
+# Entrada de datos del usuario
 T_i = float(input("Introduzca la temperatura inicial del agua\n\t[°C]> "))
 M_i = float(input("Introduzca la masa inicial del agua\n\t[kg]> "))
 t = float(input("Introduzca el intervalo de tiempo para obtener la temperatura y la masa líquida del sistema\n\t[s]> "))
@@ -41,7 +59,7 @@ P_atm = float(input("Introduzca la presión atmosférica\n\t[MPa]> "))
 # Verificar que la temperatura inicial corresponde a la fase líquida
 T_sat = Cálculo_Tsat(P_atm) # [°C]
 if(T_sat > T_i):
-    print("Se inicia en fase líquida\n")
+    print("")
 else:
     print("No se inicia en fase líquida, saliendo...\n")
     exit()
@@ -56,33 +74,18 @@ h_fg = h_fg*(1000) # [J/kg]
 Q_e = h_fg*M_i # [J]
 t_vap = (1/P)*Q_e # [s]
 
-# Calcular la temperatura y la masa líquida en el tiempo dado
-def Cáculo_MasaTemperatura(C_ea, T_i, M_i, P, T_sat, t_sat, t_vap, t):
-    if(t_sat >= t):
-        M_t = M_i
-        Q_t = P*t
-        T_t = (Q_t*1/(M_t*C_ea)) + T_i
-    elif(t_vap >= t):
-        x = (t-(t_vap+t_sat))/(t_sat-(t_vap+t_sat))
-        M_t = M_i*x
-        Q_t = P*t
-        T_t = T_sat
-    else:
-        return -1;
-    
-    return [M_t, T_t]
-
-flag = True
-i = 0
+incremento = 0
+dt = 1 # Resolución de las gráficas, 1 = [s], 0.001 [ms]
 M_ot = []
 T_ot = []
 
+flag = True # Desde una perspectiva de aquitectura, esto es terrible
 while(flag):
-    Data = Cáculo_MasaTemperatura(C_ea, T_i, M_i, P, T_sat, t_sat, t_vap, i)
+    Data = Cáculo_MasaTemperatura(C_ea, T_i, M_i, P, T_sat, t_sat, t_vap, incremento)
     if(Data == -1):
         flag = False
     else:
-        i = i + 1
+        incremento = incremento + dt
         M_ot.append(Data[0])
         T_ot.append(Data[1])
 
@@ -94,6 +97,7 @@ tabla_data = [
 ]
 
 # Crear la tabla utilizando tabulate
+print("Tabla de valores a los {t}[s] de inicio".format(t = t))
 tabla = tabulate(tabla_data, headers="firstrow", tablefmt="grid")
 
 # Imprimir la tabla
