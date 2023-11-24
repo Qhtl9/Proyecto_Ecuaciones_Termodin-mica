@@ -1,4 +1,6 @@
 import math # Para las raíces
+import matplotlib.pyplot as plt # Para los gráficos
+from tabulate import tabulate # Para las tablas
 
 n1 = 0.116_705_214_527_67E4
 n2 = -0.724_213_167_032_06E6
@@ -24,23 +26,24 @@ def Cálculo_Tsat(p): # p: Presión en [MPa]
     return T_sat # [°C]
 
 def Cálculo_EntalpíaVap(T_sat): # Tsat: Temperatura de saturación en [°C]
-    h_fg = 2256.4*pow(((1-((T_sat+273.15)/(647.096)))/(1-0.57665623)), 0.375)
+    h_fg = 2256.4*(pow(((1-((T_sat+273.15)/(647.096)))/(1-0.57665623)), 0.375))
     
     return h_fg # [kJ/kg]
 
 
-'''
+
 T_i = float(input("Introduzca la temperatura inicial del agua\n\t[°C]> "))
 M_i = float(input("Introduzca la masa inicial del agua\n\t[kg]> "))
 t = float(input("Introduzca el intervalo de tiempo para obtener la temperatura y la masa líquida del sistema\n\t[s]> "))
-W = float(input("Introduzca la potencia de la parrilla\n\t[W]> "))
+P = float(input("Introduzca la potencia de la parrilla\n\t[W]> "))
 P_atm = float(input("Introduzca la presión atmosférica\n\t[MPa]> "))
-'''
-t = 75.24375524753077
-T_i = 10
-P_atm = 0.101325
-P = 1000
-M_i = 0.05
+
+
+##t = 75.24375524753077
+##T_i = 10
+##P_atm = 0.101325
+##P = 1000 # Potencia
+##M_i = 0.05
 
 # Verificar que la temperatura inicial corresponde a la fase líquida
 T_sat = Cálculo_Tsat(P_atm) # [°C]
@@ -61,22 +64,62 @@ Q_e = h_fg*M_i # [J]
 t_vap = (1/P)*Q_e # [s]
 
 # Calcular la temperatura y la masa líquida en el tiempo dado
-if(t_sat >= t):
-    M_t = M_i
-    Q_t = P*t
-    T_t = (Q_t*1/(M_t*C_ea)) + T_i
-elif(t_vap >= t):
-    x = (t-(t_vap+t_sat))/(t_sat-(t_vap+t_sat))
-    M_t = M_i*x
-    Q_t = P*t
-    T_t = T_sat
-else:
-    print("Fuera de rango\n")
+def Cáculo_MasaTemperatura(C_ea, T_i, M_i, P, T_sat, t_sat, t_vap, t):
+    if(t_sat >= t):
+        M_t = M_i
+        Q_t = P*t
+        T_t = (Q_t*1/(M_t*C_ea)) + T_i
+    elif(t_vap >= t):
+        x = (t-(t_vap+t_sat))/(t_sat-(t_vap+t_sat))
+        M_t = M_i*x
+        Q_t = P*t
+        T_t = T_sat
+    else:
+        return -1;
+    
+    return [M_t, T_t]
 
+flag = True
+i = 0
+M_ot = []
+T_ot = []
 
+while(flag):
+    Data = Cáculo_MasaTemperatura(C_ea, T_i, M_i, P, T_sat, t_sat, t_vap, i)
+    if(Data == -1):
+        flag = False
+    else:
+        i = i + 1
+        M_ot.append(Data[0])
+        T_ot.append(Data[1])
 
-'''
-p = float(input("Introduzca la presión en [MPa]\n\t> "))
-print("Temperatura de saturación calculada: " + str(Cálculo_Tsat(p)) + "[°C]")
-print("Entalpía de vaporización calculada: " + str(Cálculo_EntalpíaVap(Cálculo_Tsat(p))) + "[kJ/kg]")
-'''
+Data_ut = Cáculo_MasaTemperatura(C_ea, T_i, M_i, P, T_sat, t_sat, t_vap, t)
+
+tabla_data = [
+    ["Masa de líquido", "Temperatura"],
+    Data_ut
+]
+
+# Crear la tabla utilizando tabulate
+tabla = tabulate(tabla_data, headers="firstrow", tablefmt="grid")
+
+# Imprimir la tabla
+print(tabla)
+
+# Graficar la lista M_ot
+plt.figure(1)
+plt.plot(M_ot, label='Masa [kg]')
+plt.xlabel('Segundos [s]')
+plt.ylabel('Masa [kg]')
+plt.title('Gráfica de masa líquida en función del tiempo')
+plt.legend()
+
+# Graficar la lista T_ot
+plt.figure(2)
+plt.plot(T_ot, label='Temperatura')
+plt.xlabel('Segundos [s]')
+plt.ylabel('Temperatura [ºC]')
+plt.title('Gráfica de temperatura en función del tiempo')
+plt.legend()
+
+plt.show()
