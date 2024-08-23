@@ -17,4 +17,6 @@ P
 $h_{fg} = 2256.4\times\left[ \frac{1-\frac{T_{sat} + 273.15}{647.096}}{1-0.57665623} \right]^{0.375}$
 
 # Fuente del ícono
-https://icon-icons.com/icon/heat-flask-lab/125456
+Hecho por SwiftIcons
+Licencia: https://creativecommons.org/licenses/by/4.0/
+Liga: https://icon-icons.com/icon/heat-flask-lab/125456
